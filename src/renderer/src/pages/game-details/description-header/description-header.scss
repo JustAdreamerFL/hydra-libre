@@ -1,0 +1,192 @@
+@use "../../../scss/globals.scss";
+
+.description-header {
+  width: 100%;
+  padding: calc(globals.$spacing-unit * 2.5);
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  gap: calc(globals.$spacing-unit * 2.5);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  &__info {
+    display: flex;
+    gap: calc(globals.$spacing-unit * 1.5);
+    flex-direction: column;
+  }
+
+  &__meta-items {
+    display: flex;
+    gap: calc(globals.$spacing-unit * 2);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  &__meta-item {
+    display: flex;
+    align-items: center;
+    gap: calc(globals.$spacing-unit * 0.75);
+    font-size: globals.$small-font-size;
+    color: globals.$body-color;
+
+    svg {
+      color: globals.$brand-teal;
+      flex-shrink: 0;
+    }
+  }
+
+  &__genres {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  &__genre-icon {
+    color: globals.$brand-teal;
+    flex-shrink: 0;
+  }
+
+  &__genre-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 14px;
+    background: rgba(22, 177, 149, 0.1);
+    color: globals.$brand-teal;
+    font-size: globals.$small-font-size;
+    font-weight: 500;
+    white-space: nowrap;
+    border: 1px solid rgba(22, 177, 149, 0.15);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: rgba(22, 177, 149, 0.18);
+    }
+  }
+
+  &__publisher-games {
+    display: flex;
+    flex-direction: column;
+    gap: calc(globals.$spacing-unit * 1.5);
+    padding-top: calc(globals.$spacing-unit * 1.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  &__publisher-games-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: globals.$muted-color;
+  }
+
+  &__carousel-wrapper {
+    position: relative;
+  }
+
+  &__carousel {
+    display: flex;
+    gap: calc(globals.$spacing-unit * 1.5);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: globals.$spacing-unit;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__scroll-button {
+    position: absolute;
+    top: 0;
+    bottom: globals.$spacing-unit;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    cursor: pointer;
+    color: #fff;
+    border: none;
+    transition: opacity 0.2s ease;
+
+    &--left {
+      left: 0;
+      background: linear-gradient(
+        90deg,
+        globals.$background-color 30%,
+        transparent
+      );
+      padding-right: globals.$spacing-unit;
+    }
+
+    &--right {
+      right: 0;
+      background: linear-gradient(
+        270deg,
+        globals.$background-color 30%,
+        transparent
+      );
+      padding-left: globals.$spacing-unit;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__game-card {
+    display: flex;
+    flex-direction: column;
+    gap: calc(globals.$spacing-unit * 0.75);
+    flex-shrink: 0;
+    width: 120px;
+    scroll-snap-align: start;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    color: globals.$body-color;
+
+    &:hover {
+      transform: translateY(-3px);
+
+      .description-header__game-cover {
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+    }
+  }
+
+  &__game-cover {
+    width: 120px;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid globals.$border-color;
+    transition: border-color 0.2s ease;
+  }
+
+  &__game-cover-placeholder {
+    width: 120px;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid globals.$border-color;
+    background: rgba(255, 255, 255, 0.03);
+    color: globals.$body-color;
+  }
+
+  &__game-title {
+    font-size: globals.$small-font-size;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+  }
+}

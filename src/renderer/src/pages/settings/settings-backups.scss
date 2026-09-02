@@ -1,0 +1,142 @@
+@use "../../scss/globals.scss";
+
+.settings-backups {
+  display: flex;
+  flex-direction: column;
+  gap: calc(globals.$spacing-unit * 3);
+
+  &__description {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.6;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: calc(globals.$spacing-unit * 2);
+  }
+
+  &__section-title {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &__section-description {
+    margin: -8px 0 0;
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  &__provider-cards {
+    display: flex;
+    gap: calc(globals.$spacing-unit * 2);
+  }
+
+  &__provider-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: calc(globals.$spacing-unit);
+    width: 140px;
+    padding: calc(globals.$spacing-unit * 2) calc(globals.$spacing-unit * 2);
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: globals.$dark-background-color;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    &--active {
+      border-color: globals.$muted-color;
+      color: globals.$body-color;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    small {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 11px;
+    }
+  }
+
+  &__provider-card-label {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  &__status-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+  }
+
+  &__local-backup-path {
+    display: flex;
+    gap: calc(globals.$spacing-unit * 2);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__profile-sync {
+    padding: calc(globals.$spacing-unit * 2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  &__profile-sync-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: calc(globals.$spacing-unit * 2);
+  }
+
+  &__profile-sync-icon {
+    flex: 0 0 auto;
+    color: globals.$muted-color;
+  }
+
+  &__profile-sync-status {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 13px;
+
+    small {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 11px;
+    }
+  }
+
+  &__profile-sync-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(globals.$spacing-unit * 1.5);
+  }
+}
+
+@media (max-width: 700px) {
+  .settings-backups {
+    &__provider-cards {
+      flex-direction: column;
+    }
+
+    &__provider-card {
+      width: 100%;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+  }
+}

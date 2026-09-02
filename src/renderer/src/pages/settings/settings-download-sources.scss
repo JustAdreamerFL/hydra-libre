@@ -1,0 +1,219 @@
+@use "../../scss/globals.scss";
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.settings-download-sources {
+  display: flex;
+  flex-direction: column;
+  gap: calc(globals.$spacing-unit * 2);
+
+  &__description {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.6;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__header-left {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+  }
+
+  &__count {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &__header-actions {
+    display: flex;
+    gap: globals.$spacing-unit;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: globals.$spacing-unit;
+    padding: calc(globals.$spacing-unit * 5) 0;
+    color: rgba(255, 255, 255, 0.3);
+
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+
+  &__list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: calc(globals.$spacing-unit * 2);
+    padding: calc(globals.$spacing-unit * 1.5) calc(globals.$spacing-unit * 2);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.04);
+    transition:
+      background-color 0.15s ease,
+      opacity 0.2s ease;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+
+      .settings-download-sources__remove-btn {
+        opacity: 1;
+      }
+    }
+
+    &--syncing {
+      opacity: globals.$disabled-opacity;
+      pointer-events: none;
+    }
+  }
+
+  &__item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__item-name-row {
+    display: flex;
+    align-items: center;
+    gap: calc(globals.$spacing-unit * 1.5);
+  }
+
+  &__item-name {
+    font-size: 14px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    &--matched {
+      color: #4ade80;
+      background-color: rgba(74, 222, 128, 0.1);
+    }
+
+    &--matching {
+      color: #facc15;
+      background-color: rgba(250, 204, 21, 0.1);
+    }
+
+    &--failed {
+      color: #f87171;
+      background-color: rgba(248, 113, 113, 0.1);
+    }
+  }
+
+  &__item-meta {
+    display: flex;
+    align-items: center;
+    gap: calc(globals.$spacing-unit * 2);
+  }
+
+  &__item-url {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.35);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 400px;
+  }
+
+  &__catalogue-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.4;
+    }
+  }
+
+  &__remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    opacity: 0;
+    flex-shrink: 0;
+    transition:
+      opacity 0.15s ease,
+      background-color 0.15s ease,
+      color 0.15s ease;
+
+    &:hover {
+      background-color: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+    }
+  }
+
+  &__spinner {
+    animation: spin 1s linear infinite;
+  }
+}

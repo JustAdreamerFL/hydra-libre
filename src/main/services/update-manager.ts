@@ -1,0 +1,126 @@
+import updater, { type ProgressInfo, UpdateInfo } from "electron-updater";
+import { logger, WindowManager } from "@main/services";
+import { AppUpdaterEvent, UserPreferences } from "@types";
+import { app } from "electron";
+import { publishNotificationUpdateReadyToInstall } from "@main/services/notifications";
+import { db, levelKeys } from "@main/level";
+import { MAIN_LOOP_INTERVAL } from "@main/constants";
+
+const { autoUpdater } = updater;
+const sendEventsForDebug = false;
+const ticksToUpdate = (50 * 60 * 1000) / MAIN_LOOP_INTERVAL; // 50 minutes
+
+export class UpdateManager {
+  private static hasNotified = false;
+  private static newVersion = "";
+  private static checkTick = 0;
+  private static listenersRegistered = false;
+
+  private static mockValuesForDebug() {
+    this.sendEvent({ type: "update-available", info: { version: "3.3.1" } });
+    this.sendEvent({
+      type: "download-progress",
+      info: {
+        percent: 42,
+        transferred: 42_000_000,
+        total: 100_000_000,
+        bytesPerSecond: 5_000_000,
+      },
+    });
+    this.sendEvent({ type: "update-downloaded" });
+  }
+
+  private static sendEvent(event: AppUpdaterEvent) {
+    WindowManager.mainWindow?.webContents.send("autoUpdaterEvent", event);
+  }
+
+  private static async isAutoInstallEnabled() {
+    if (process.platform === "darwin") return false;
+    if (process.platform === "win32") {
+      return process.env.PORTABLE_EXECUTABLE_FILE == null;
+    }
+
+    if (process.platform === "linux") {
+      const userPreferences = await db.get<string, UserPreferences | null>(
+        levelKeys.userPreferences,
+        {
+          valueEncoding: "json",
+        }
+      );
+
+      return userPreferences?.enableAutoInstall === true;
+    }
+
+    return false;
+  }
+
+  private static registerListeners() {
+    if (this.listenersRegistered) return;
+    this.listenersRegistered = true;
+
+    autoUpdater.on("checking-for-update", () => {
+      this.sendEvent({ type: "checking-for-update" });
+    });
+
+    autoUpdater.on("update-available", (info: UpdateInfo) => {
+      this.sendEvent({ type: "update-available", info });
+      this.newVersion = info.version;
+    });
+
+    autoUpdater.on("download-progress", (info: ProgressInfo) => {
+      this.sendEvent({
+        type: "download-progress",
+        info: {
+          percent: info.percent,
+          transferred: info.transferred,
+          total: info.total,
+          bytesPerSecond: info.bytesPerSecond,
+        },
+      });
+    });
+
+    autoUpdater.on("update-downloaded", () => {
+      this.sendEvent({ type: "update-downloaded" });
+
+      if (!this.hasNotified) {
+        this.hasNotified = true;
+        publishNotificationUpdateReadyToInstall(this.newVersion);
+      }
+    });
+
+    autoUpdater.on("update-not-available", () => {
+      this.sendEvent({ type: "update-not-available" });
+    });
+
+    autoUpdater.on("error", (error) => {
+      logger.error("Auto updater error", error);
+      this.sendEvent({ type: "error" });
+    });
+  }
+
+  public static async checkForUpdates() {
+    this.registerListeners();
+
+    const isAutoInstallAvailable = await this.isAutoInstallEnabled();
+
+    if (app.isPackaged) {
+      autoUpdater.autoDownload = isAutoInstallAvailable;
+      autoUpdater.checkForUpdates().then((result) => {
+        logger.log(`Check for updates result: ${result}`);
+      });
+    } else if (sendEventsForDebug) {
+      this.mockValuesForDebug();
+    } else {
+      this.sendEvent({ type: "update-not-available" });
+    }
+
+    return isAutoInstallAvailable;
+  }
+
+  public static checkForUpdatePeriodically() {
+    if (this.checkTick % ticksToUpdate == 0) {
+      this.checkForUpdates();
+    }
+    this.checkTick++;
+  }
+}

@@ -1,0 +1,50 @@
+name: Sync upstream Hydra
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Prepare upstream update
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out hydra-libre
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Merge upstream while retaining Libre changes
+        run: node scripts/sync-upstream.cjs
+
+      - name: Open update pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/upstream-sync
+          delete-branch: true
+          title: "chore: sync Hydra upstream"
+          commit-message: "chore: sync Hydra upstream"
+          body: |
+            This automated pull request updates hydra-libre from
+            [hydralauncher/hydra](https://github.com/hydralauncher/hydra).
+
+            Non-conflicting upstream changes are included automatically. When
+            both projects changed the same hunk, hydra-libre's local version is
+            kept so the Libre features remain intact; please review those
+            files before merging.
