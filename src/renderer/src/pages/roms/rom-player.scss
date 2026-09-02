@@ -1,0 +1,97 @@
+@use "../../scss/globals.scss";
+
+.rom-player {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    padding: globals.$spacing-unit globals.$spacing-unit * 2;
+    border-bottom: 1px solid globals.$border-color;
+    gap: globals.$spacing-unit * 2;
+  }
+
+  &__title {
+    font-size: globals.$body-font-size;
+    font-weight: 600;
+    color: globals.$muted-color;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__console-badge {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #fff;
+  }
+
+  &__playtime {
+    font-size: globals.$small-font-size;
+    color: rgba(255, 255, 255, 0.4);
+    margin-left: auto;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+  }
+
+  &__slot-selector {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    padding: 0 2px;
+  }
+
+  &__slot-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.15s;
+
+    &:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &__slot-label {
+    font-size: globals.$small-font-size;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+    min-width: 44px;
+    text-align: center;
+    user-select: none;
+  }
+
+  &__iframe-container {
+    flex: 1;
+    overflow: hidden;
+    background-color: #000;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  }
+}

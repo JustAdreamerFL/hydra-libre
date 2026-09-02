@@ -1,0 +1,24 @@
+.vscode/
+node_modules/
+__pycache__
+dist
+out
+.DS_Store
+*.log*
+.env
+.vite
+ludusavi/**
+!ludusavi/config.yaml
+hydra-python-rpc/
+.python-version
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+*storybook.log
+
+aria2/
+tsconfig.node.tsbuildinfo
+
+# Claude Code temporary worktrees
+.claude/worktrees/

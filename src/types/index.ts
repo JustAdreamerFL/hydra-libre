@@ -1,0 +1,547 @@
+import type { Cracker, DownloadSourceStatus, Downloader } from "@shared";
+import type { SteamAppDetails } from "./steam.types";
+import type { Download, Game, Subscription } from "./level.types";
+import type { GameShop, UnlockedAchievement } from "./game.types";
+
+export type FriendRequestAction = "ACCEPTED" | "REFUSED" | "CANCEL";
+
+export type HydraCloudFeature =
+  | "achievements"
+  | "backup"
+  | "achievements-points";
+
+export interface DiskUsage {
+  free: number;
+  total: number;
+}
+
+/**
+ * The result of a profile-folder operation. Profile sync is deliberately
+ * independent from Hydra Cloud: the folder may be on a local disk or managed
+ * by any file-sync provider selected by the user.
+ */
+export interface ProfileSyncSummary {
+  filePath: string;
+  gamesImported: number;
+  achievementSetsImported: number;
+  assetsImported: number;
+  preferencesImported: number;
+  syncedAt: string;
+}
+
+export interface ProfileSyncStatus {
+  configured: boolean;
+  path: string | null;
+  filePath: string | null;
+  profileId: string | null;
+  lastSyncedAt: string | null;
+  lastImportedAt: string | null;
+  lastExportedAt: string | null;
+  gameCount: number;
+  achievementSetCount: number;
+}
+
+export interface GameRepack {
+  id: string;
+  title: string;
+  fileSize: string | null;
+  uris: string[];
+  unavailableUris: string[];
+  uploadDate: string | null;
+  downloadSourceId: string;
+  downloadSourceName: string;
+  createdAt: string;
+}
+
+export interface DownloadSource {
+  id: string;
+  name: string;
+  url: string;
+  status: DownloadSourceStatus;
+  downloadCount: number;
+  fingerprint?: string;
+  isRemote?: true;
+  createdAt: string;
+}
+
+export interface ShopAssets {
+  objectId: string;
+  shop: GameShop;
+  title: string;
+  iconUrl: string | null;
+  libraryHeroImageUrl: string | null;
+  libraryImageUrl: string | null;
+  logoImageUrl: string | null;
+  logoPosition: string | null;
+  coverImageUrl: string | null;
+  downloadSources: string[];
+}
+
+export type ShopDetails = SteamAppDetails & {
+  objectId: string;
+};
+
+export type ShopDetailsWithAssets = ShopDetails & {
+  assets: ShopAssets | null;
+};
+
+export interface TorrentFile {
+  path: string;
+  length: number;
+}
+
+export type UserGame = {
+  objectId: string;
+  shop: GameShop;
+  title: string;
+  playTimeInSeconds: number;
+  lastTimePlayed: Date | null;
+  unlockedAchievementCount: number;
+  achievementCount: number;
+  achievementsPointsEarnedSum: number;
+  hasManuallyUpdatedPlaytime: boolean;
+  isFavorite: boolean;
+  isPinned: boolean;
+  pinnedDate?: Date | null;
+  currentStreak?: number;
+  longestStreak?: number;
+  lastStreakDate?: string | null;
+} & ShopAssets;
+
+export interface UserLibraryResponse {
+  totalCount: number;
+  library: UserGame[];
+  pinnedGames: UserGame[];
+}
+
+export interface GameRunning {
+  id: string;
+  title: string;
+  iconUrl: string | null;
+  objectId: string;
+  shop: GameShop;
+  sessionDurationInMillis: number;
+}
+
+export interface Steam250Game {
+  title: string;
+  objectId: string;
+}
+
+export interface SteamGame {
+  id: number;
+  name: string;
+  clientIcon: string | null;
+}
+
+export interface UpdateDownloadProgress {
+  /** 0-100 */
+  percent: number;
+  /** bytes downloaded so far */
+  transferred: number;
+  /** total bytes to download */
+  total: number;
+  /** current download speed in bytes per second */
+  bytesPerSecond: number;
+}
+
+export type AppUpdaterEvent =
+  | { type: "checking-for-update" }
+  | { type: "update-available"; info: { version: string } }
+  | { type: "download-progress"; info: UpdateDownloadProgress }
+  | { type: "update-downloaded" }
+  | { type: "update-not-available" }
+  | { type: "error" };
+
+/* Events */
+export interface StartGameDownloadPayload {
+  objectId: string;
+  title: string;
+  shop: GameShop;
+  uri: string;
+  downloadPath: string;
+  downloader: Downloader;
+  automaticallyExtract: boolean;
+  fileSize?: string | null;
+}
+
+export interface UserFriend {
+  id: string;
+  displayName: string;
+  profileImageUrl: string | null;
+  currentGame:
+    | (ShopAssets & {
+        sessionDurationInSeconds: number;
+      })
+    | null;
+}
+
+export interface UserFriends {
+  totalFriends: number;
+  friends: UserFriend[];
+}
+
+export interface UserBlocks {
+  totalBlocks: number;
+  blocks: UserFriend[];
+}
+
+export interface FriendRequestSync {
+  friendRequestCount: number;
+}
+
+export interface NotificationSync {
+  notificationCount: number;
+}
+
+export interface FriendRequest {
+  id: string;
+  displayName: string;
+  profileImageUrl: string | null;
+  type: "SENT" | "RECEIVED";
+}
+
+export interface UserRelation {
+  AId: string;
+  BId: string;
+  status: "ACCEPTED" | "PENDING";
+}
+
+export type UserProfileCurrentGame = GameRunning &
+  ShopAssets & {
+    sessionDurationInSeconds: number;
+  };
+
+export type ProfileVisibility = "PUBLIC" | "PRIVATE" | "FRIENDS";
+
+export interface Badge {
+  name: string;
+  title: string;
+  description: string;
+  badge: {
+    url: string;
+  };
+}
+
+export interface UserDetails {
+  id: string;
+  username: string;
+  email: string | null;
+  displayName: string;
+  profileImageUrl: string | null;
+  backgroundImageUrl: string | null;
+  profileVisibility: ProfileVisibility;
+  bio: string;
+  subscription: Subscription | null;
+  karma: number;
+  quirks?: {
+    backupsPerGameLimit: number;
+  };
+}
+
+export interface UserProfile {
+  id: string;
+  displayName: string;
+  profileImageUrl: string | null;
+  email: string | null;
+  backgroundImageUrl: string | null;
+  profileVisibility: ProfileVisibility;
+  libraryGames: UserGame[];
+  recentGames: UserGame[];
+  friends: UserFriend[];
+  totalFriends: number;
+  relation: UserRelation | null;
+  currentGame: UserProfileCurrentGame | null;
+  bio: string;
+  hasActiveSubscription: boolean;
+  karma: number;
+  quirks: {
+    backupsPerGameLimit: number;
+  };
+  badges: string[];
+  hasCompletedWrapped2025: boolean;
+}
+
+export interface UpdateProfileRequest {
+  displayName?: string;
+  profileVisibility?: ProfileVisibility;
+  profileImageUrl?: string | null;
+  backgroundImageUrl?: string | null;
+  bio?: string;
+  language?: string;
+}
+
+export interface DownloadSourceDownload {
+  title: string;
+  uris: string[];
+  uploadDate: string;
+  fileSize: string;
+}
+
+/**
+ * A single parsed download entry from a download source JSON file, stored
+ * locally so repacks can be matched client-side without a remote backend.
+ */
+export interface DownloadSourceEntry {
+  sourceId: string;
+  sourceName: string;
+  title: string;
+  /** `formatName(title)` precomputed for fast game-title matching. */
+  formattedTitle: string;
+  uris: string[];
+  fileSize: string | null;
+  uploadDate: string | null;
+  /** `uploadDate` parsed to epoch millis (0 when unknown) for `since` checks. */
+  uploadDateMs: number;
+}
+
+export interface GameStats {
+  downloadCount: number;
+  playerCount: number;
+  averageScore: number | null;
+  reviewCount: number;
+}
+
+export interface GameReview {
+  id: string;
+  reviewHtml: string;
+  score: number;
+  createdAt: string;
+  updatedAt: string;
+  upvotes: number;
+  downvotes: number;
+  isBlocked: boolean;
+  hasUpvoted: boolean;
+  hasDownvoted: boolean;
+  playTimeInSeconds?: number;
+  user: {
+    id: string;
+    displayName: string;
+    profileImageUrl: string | null;
+  };
+  translations: {
+    [key: string]: string;
+  };
+  detectedLanguage: string | null;
+}
+
+export interface TrendingGame extends ShopAssets {
+  description: string | null;
+  uri: string;
+}
+
+export interface UserStatsPercentile {
+  value: number;
+  topPercentile: number;
+}
+
+export interface UserStats {
+  libraryCount: number;
+  friendsCount: number;
+  totalPlayTimeInSeconds: UserStatsPercentile;
+  achievementsPointsEarnedSum?: UserStatsPercentile;
+  unlockedAchievementSum?: number;
+}
+
+export interface UpdatedUnlockedAchievements {
+  objectId: string;
+  shop: GameShop;
+  achievements: UnlockedAchievement[];
+}
+
+export interface AchievementFile {
+  type: Cracker;
+  filePath: string;
+}
+
+export type GameAchievementFiles = {
+  [id: string]: AchievementFile[];
+};
+
+export interface AchievementNotificationInfo {
+  title: string;
+  description?: string;
+  iconUrl: string;
+  isHidden: boolean;
+  isRare: boolean;
+  isPlatinum: boolean;
+  points?: number;
+}
+
+export interface FriendNotificationInfo {
+  displayName: string;
+  profileImageUrl: string | null;
+  gameTitle: string;
+  gameIconUrl: string | null;
+}
+
+export interface GameArtifact {
+  id: string;
+  artifactLengthInBytes: number;
+  downloadOptionTitle: string | null;
+  createdAt: string;
+  updatedAt: string;
+  hostname: string;
+  downloadCount: number;
+  label?: string;
+  isFrozen: boolean;
+}
+
+export type NotificationType =
+  | "FRIEND_REQUEST_RECEIVED"
+  | "FRIEND_REQUEST_ACCEPTED"
+  | "BADGE_RECEIVED"
+  | "REVIEW_UPVOTE";
+
+export type LocalNotificationType =
+  | "EXTRACTION_COMPLETE"
+  | "DOWNLOAD_COMPLETE"
+  | "UPDATE_AVAILABLE"
+  | "ACHIEVEMENT_UNLOCKED"
+  | "SCAN_GAMES_COMPLETE";
+
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  variables: Record<string, string>;
+  pictureUrl: string | null;
+  url: string | null;
+  isRead: boolean;
+  priority: number;
+  createdAt: string;
+}
+
+export interface LocalNotification {
+  id: string;
+  type: LocalNotificationType;
+  title: string;
+  description: string;
+  pictureUrl: string | null;
+  url: string | null;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export type MergedNotification =
+  | (Notification & { source: "api" })
+  | (LocalNotification & { source: "local" });
+
+export interface NotificationsResponse {
+  notifications: Notification[];
+  pagination: {
+    total: number;
+    take: number;
+    skip: number;
+    hasMore: boolean;
+  };
+}
+
+export interface NotificationCountResponse {
+  count: number;
+}
+
+export interface ComparedAchievements {
+  achievementsPointsTotal: number;
+  owner: {
+    totalAchievementCount: number;
+    unlockedAchievementCount: number;
+    achievementsPointsEarnedSum?: number;
+  };
+  target: {
+    displayName: string;
+    profileImageUrl: string;
+    totalAchievementCount: number;
+    unlockedAchievementCount: number;
+    achievementsPointsEarnedSum: number;
+  };
+  achievements: {
+    hidden: boolean;
+    icon: string;
+    displayName: string;
+    description: string;
+    ownerStat?: {
+      unlocked: boolean;
+      unlockTime: number;
+    };
+    targetStat: {
+      unlocked: boolean;
+      unlockTime: number;
+    };
+  }[];
+}
+
+export interface CatalogueSearchPayload {
+  title: string;
+  downloadSourceFingerprints: string[];
+  tags: number[];
+  publishers: string[];
+  genres: string[];
+  developers: string[];
+}
+
+export type CatalogueSearchResult = {
+  id: string;
+  objectId: string;
+  title: string;
+  shop: GameShop;
+  genres: string[];
+} & Pick<ShopAssets, "libraryImageUrl" | "downloadSources">;
+
+export type LibraryGame = Game &
+  Partial<ShopAssets> & {
+    id: string;
+    download: Download | null;
+    unlockedAchievementCount?: number;
+    achievementCount?: number;
+  };
+
+export type UserGameDetails = ShopAssets & {
+  id: string;
+  playTimeInSeconds: number;
+  unlockedAchievementCount: number;
+  achievementsPointsEarnedSum: number;
+  lastTimePlayed: Date | null;
+  isDeleted: boolean;
+  isFavorite: boolean;
+  friendsWhoPlayed: {
+    id: string;
+    displayName: string;
+    profileImageUrl: string | null;
+    lastTimePlayed: Date | null;
+    playTimeInSeconds: number;
+  }[];
+};
+
+export * from "./game.types";
+export * from "./steam.types";
+export * from "./download.types";
+export * from "./ludusavi.types";
+export * from "./how-long-to-beat.types";
+export * from "./level.types";
+export * from "./theme.types";
+export * from "./rom.types";
+export * from "./news.types";
+export * from "./crackwatch.types";
+
+export interface GoogleDriveTokens {
+  accessToken: string;
+  refreshToken: string;
+  expiryDate: number;
+}
+
+export interface GoogleDriveUserInfo {
+  email: string;
+  displayName: string;
+  photoUrl: string | null;
+}
+
+export interface GoogleDriveBackupArtifact {
+  id: string;
+  name: string;
+  size: number;
+  createdAt: string;
+  modifiedAt: string;
+  gameObjectId: string;
+  gameShop: string;
+  label: string | null;
+}

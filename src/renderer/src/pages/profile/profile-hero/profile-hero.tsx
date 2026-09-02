@@ -1,0 +1,380 @@
+import { useCallback, useContext, useMemo, useState } from "react";
+import { userProfileContext } from "@renderer/context";
+import {
+  CheckCircleFillIcon,
+  CopyIcon,
+  PencilIcon,
+  PersonAddIcon,
+  SignOutIcon,
+  XCircleFillIcon,
+} from "@primer/octicons-react";
+import { buildGameDetailsPath } from "@renderer/helpers";
+import {
+  Avatar,
+  Button,
+  FullscreenMediaModal,
+  Link,
+} from "@renderer/components";
+import { useTranslation } from "react-i18next";
+import {
+  useAppSelector,
+  useDate,
+  useToast,
+  useUserDetails,
+} from "@renderer/hooks";
+import { addSeconds } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+
+import type { FriendRequestAction } from "@types";
+import { EditProfileModal } from "../edit-profile-modal/edit-profile-modal";
+import Skeleton from "react-loading-skeleton";
+import { UploadBackgroundImageButton } from "../upload-background-image-button/upload-background-image-button";
+import "./profile-hero.scss";
+
+type FriendAction = FriendRequestAction | "SEND";
+
+export function ProfileHero() {
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [showFullscreenAvatar, setShowFullscreenAvatar] = useState(false);
+  const [isPerformingAction, setIsPerformingAction] = useState(false);
+  const [isCopyButtonHovered, setIsCopyButtonHovered] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const { isMe, getUserProfile, userProfile, heroBackground, backgroundImage } =
+    useContext(userProfileContext);
+  const { signOut, updateFriendRequestState, sendFriendRequest } =
+    useUserDetails();
+
+  const { gameRunning } = useAppSelector((state) => state.gameRunning);
+
+  const { t } = useTranslation("user_profile");
+  const { formatDistance } = useDate();
+
+  const { showSuccessToast, showErrorToast } = useToast();
+
+  const navigate = useNavigate();
+
+  const handleSignOut = useCallback(async () => {
+    setIsPerformingAction(true);
+
+    try {
+      await signOut();
+
+      showSuccessToast(t("successfully_signed_out"));
+    } finally {
+      setIsPerformingAction(false);
+    }
+    navigate("/");
+  }, [navigate, signOut, showSuccessToast, t]);
+
+  const handleFriendAction = useCallback(
+    async (userId: string, action: FriendAction) => {
+      if (!userProfile) return;
+      setIsPerformingAction(true);
+
+      try {
+        if (action === "SEND") {
+          await sendFriendRequest(userProfile.id).then(getUserProfile);
+          return;
+        }
+
+        await updateFriendRequestState(userId, action).then(getUserProfile);
+      } catch (_err) {
+        showErrorToast(t("try_again"));
+      } finally {
+        setIsPerformingAction(false);
+      }
+    },
+    [
+      sendFriendRequest,
+      updateFriendRequestState,
+      t,
+      showErrorToast,
+      getUserProfile,
+      userProfile,
+    ]
+  );
+
+  const profileActions = useMemo(() => {
+    if (!userProfile) return null;
+
+    if (isMe) {
+      return (
+        <>
+          <Button
+            theme="outline"
+            onClick={() => setShowEditProfileModal(true)}
+            disabled={isPerformingAction}
+            className="profile-hero__button--outline"
+          >
+            <PencilIcon />
+            {t("edit_profile")}
+          </Button>
+
+          <Button
+            theme="danger"
+            onClick={handleSignOut}
+            disabled={isPerformingAction}
+          >
+            <SignOutIcon />
+            {t("sign_out")}
+          </Button>
+        </>
+      );
+    }
+
+    if (userProfile.relation == null) {
+      return (
+        <Button
+          theme="outline"
+          onClick={() => handleFriendAction(userProfile.id, "SEND")}
+          disabled={isPerformingAction}
+          className="profile-hero__button--outline"
+        >
+          <PersonAddIcon />
+          {t("add_friend")}
+        </Button>
+      );
+    }
+
+    if (userProfile.relation.status === "ACCEPTED") {
+      return null;
+    }
+
+    if (userProfile.relation.BId === userProfile.id) {
+      return (
+        <Button
+          theme="outline"
+          onClick={() =>
+            handleFriendAction(userProfile.relation!.BId, "CANCEL")
+          }
+          disabled={isPerformingAction}
+          className="profile-hero__button--outline"
+        >
+          <XCircleFillIcon /> {t("cancel_request")}
+        </Button>
+      );
+    }
+
+    return (
+      <>
+        <Button
+          theme="outline"
+          onClick={() =>
+            handleFriendAction(userProfile.relation!.AId, "ACCEPTED")
+          }
+          disabled={isPerformingAction}
+          className="profile-hero__button--outline"
+        >
+          <CheckCircleFillIcon /> {t("accept_request")}
+        </Button>
+        <Button
+          theme="danger"
+          onClick={() =>
+            handleFriendAction(userProfile.relation!.AId, "REFUSED")
+          }
+          disabled={isPerformingAction}
+        >
+          <XCircleFillIcon /> {t("ignore_request")}
+        </Button>
+      </>
+    );
+  }, [
+    handleFriendAction,
+    handleSignOut,
+    isMe,
+    t,
+    isPerformingAction,
+    userProfile,
+  ]);
+
+  const handleAvatarClick = useCallback(() => {
+    if (userProfile?.profileImageUrl) {
+      setShowFullscreenAvatar(true);
+    } else if (isMe) {
+      setShowEditProfileModal(true);
+    }
+  }, [isMe, userProfile?.profileImageUrl]);
+
+  const copyProfileLink = useCallback(() => {
+    if (userProfile?.id) {
+      navigator.clipboard.writeText(
+        `hydralauncher://profile?userId=${userProfile.id}`
+      );
+      setIsCopied(true);
+
+      const startTime = performance.now();
+      const duration = 1200; // 1.2 seconds
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        if (elapsed < duration) {
+          requestAnimationFrame(animate);
+        } else {
+          setIsCopied(false);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    }
+  }, [userProfile]);
+
+  const currentGame = useMemo(() => {
+    if (isMe) {
+      if (gameRunning)
+        return {
+          ...gameRunning,
+          objectId: gameRunning.objectId,
+          sessionDurationInSeconds: gameRunning.sessionDurationInMillis / 1000,
+        };
+
+      return null;
+    }
+    return userProfile?.currentGame;
+  }, [isMe, userProfile, gameRunning]);
+
+  return (
+    <>
+      <EditProfileModal
+        visible={showEditProfileModal}
+        onClose={() => setShowEditProfileModal(false)}
+      />
+
+      <FullscreenMediaModal
+        visible={showFullscreenAvatar}
+        onClose={() => setShowFullscreenAvatar(false)}
+        src={userProfile?.profileImageUrl}
+        alt={userProfile?.displayName}
+      />
+
+      <section
+        className="profile-hero__content-box"
+        style={{ background: !backgroundImage ? heroBackground : undefined }}
+      >
+        {backgroundImage && (
+          <img
+            src={backgroundImage}
+            alt=""
+            className="profile-hero__background-image"
+          />
+        )}
+
+        <div
+          className={`profile-hero__background-overlay ${
+            !backgroundImage
+              ? "profile-hero__background-overlay--transparent"
+              : ""
+          }`}
+        >
+          <div className="profile-hero__user-information">
+            <button
+              type="button"
+              className="profile-hero__avatar-button"
+              onClick={handleAvatarClick}
+            >
+              <Avatar
+                size={96}
+                alt={userProfile?.displayName}
+                src={userProfile?.profileImageUrl}
+              />
+            </button>
+
+            <div className="profile-hero__information">
+              {userProfile ? (
+                <div className="profile-hero__display-name-container">
+                  <h2 className="profile-hero__display-name">
+                    {userProfile?.displayName}
+                  </h2>
+
+                  <motion.button
+                    type="button"
+                    className="profile-hero__copy-button"
+                    onClick={copyProfileLink}
+                    title={t("copy_profile_link")}
+                    onMouseEnter={() => setIsCopyButtonHovered(true)}
+                    onMouseLeave={() => setIsCopyButtonHovered(false)}
+                    initial={{ width: 28 }}
+                    animate={{
+                      width: isCopyButtonHovered || isCopied ? 105 : 28,
+                    }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
+                    <motion.span
+                      className="profile-hero__friend-code"
+                      initial={{ opacity: 0, marginRight: 0 }}
+                      animate={{
+                        opacity: isCopyButtonHovered || isCopied ? 1 : 0,
+                        marginRight: isCopyButtonHovered || isCopied ? 8 : 0,
+                      }}
+                      transition={{ duration: 0.2, ease: "easeInOut" }}
+                    >
+                      {isCopied ? t("copied") : userProfile?.id}
+                    </motion.span>
+                    <CopyIcon size={16} />
+                  </motion.button>
+                </div>
+              ) : (
+                <Skeleton width={150} height={28} />
+              )}
+
+              {userProfile?.bio && (
+                <p className="profile-hero__bio">{userProfile.bio}</p>
+              )}
+
+              {currentGame && (
+                <Link
+                  to={buildGameDetailsPath({
+                    ...currentGame,
+                    objectId: currentGame.objectId,
+                  })}
+                  className="profile-hero__current-game-card"
+                >
+                  <span className="profile-hero__playing-indicator" />
+
+                  {"iconUrl" in currentGame && currentGame.iconUrl && (
+                    <img
+                      className="profile-hero__current-game-icon"
+                      src={currentGame.iconUrl}
+                      alt={currentGame.title}
+                    />
+                  )}
+
+                  <div className="profile-hero__current-game-info">
+                    <span className="profile-hero__current-game-title">
+                      {currentGame.title}
+                    </span>
+                    <span className="profile-hero__current-game-time">
+                      {t("playing_for", {
+                        amount: formatDistance(
+                          addSeconds(
+                            new Date(),
+                            -currentGame.sessionDurationInSeconds
+                          ),
+                          new Date()
+                        ),
+                      })}
+                    </span>
+                  </div>
+                </Link>
+              )}
+            </div>
+
+            <UploadBackgroundImageButton />
+          </div>
+        </div>
+
+        <div
+          className={`profile-hero__hero-panel ${
+            !backgroundImage ? "profile-hero__hero-panel--transparent" : ""
+          }`}
+          style={{
+            background: !backgroundImage ? heroBackground : undefined,
+          }}
+        >
+          <div className="profile-hero__actions">{profileActions}</div>
+        </div>
+      </section>
+    </>
+  );
+}

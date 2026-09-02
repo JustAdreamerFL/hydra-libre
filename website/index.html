@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101014" />
+    <meta
+      name="description"
+      content="Hydra Libre is a free, local-first game library and launcher for Windows, Linux, and macOS."
+    />
+    <title>Hydra Libre — Your games, your way</title>
+    <link
+      rel="icon"
+      href="https://raw.githubusercontent.com/hydralauncher/hydra/main/resources/icon.png"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#overview" aria-label="Hydra Libre home">
+        <span class="brand-mark">H</span>
+        <span>HYDRA <em>LIBRE</em></span>
+      </a>
+      <button
+        class="mobile-menu"
+        type="button"
+        aria-label="Open navigation"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="tab-link is-active" href="#overview" data-tab="overview"
+          >Overview</a
+        >
+        <a class="tab-link" href="#features" data-tab="features">Features</a>
+        <a class="tab-link" href="#achievements" data-tab="achievements"
+          >Achievements</a
+        >
+        <a class="tab-link" href="#social" data-tab="social">Social</a>
+        <a class="tab-link" href="#cloud" data-tab="cloud">Cloud saves</a>
+        <a class="tab-link" href="#download" data-tab="download">Download</a>
+        <a class="tab-link" href="#faq" data-tab="faq">FAQ</a>
+      </nav>
+      <a class="header-cta" href="#download">Get Hydra Libre <span>↗</span></a>
+    </header>
+
+    <main>
+      <section
+        id="overview"
+        class="tab-panel hero-panel is-visible"
+        data-panel="overview"
+      >
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="pulse"></span> Free, local-first game launcher
+          </p>
+          <h1>Your games.<br /><span>Your way.</span></h1>
+          <p class="hero-lead">
+            A beautiful, open launcher for the games you already own. Find your
+            library, track your journey, and keep your saves in a folder you
+            control.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#download"
+              >Download Hydra Libre <span>↓</span></a
+            >
+            <a class="button button-ghost" href="#features"
+              >Explore features <span>→</span></a
+            >
+          </div>
+          <div class="platform-row" aria-label="Supported platforms">
+            <span><b>⌘</b> macOS</span><span><b>⊞</b> Windows</span
+            ><span><b>◈</b> Linux</span>
+          </div>
+        </div>
+        <div class="hero-art" aria-label="Hydra Libre library preview">
+          <div class="art-glow"></div>
+          <div class="launcher-window">
+            <div class="window-bar">
+              <span></span><span></span><span></span><i>HYDRA LIBRE</i>
+            </div>
+            <div class="window-content">
+              <aside class="mini-sidebar">
+                <strong>H</strong><span class="selected"></span><span></span
+                ><span></span><span></span>
+              </aside>
+              <div class="mini-library">
+                <div class="mini-top"><small>YOUR LIBRARY</small><b>⌕</b></div>
+                <div class="mini-feature">
+                  <div class="mini-feature-copy">
+                    <small>CONTINUE PLAYING</small>
+                    <h3>Hollow Knight</h3>
+                    <p>34 hours played</p>
+                    <button>Play now&nbsp; →</button>
+                  </div>
+                  <div class="character-orb">✦</div>
+                </div>
+                <div class="mini-row-title">
+                  <span>Recently played</span><small>View all →</small>
+                </div>
+                <div class="mini-games">
+                  <div class="mini-game cover-a"><b>CELESTE</b></div>
+                  <div class="mini-game cover-b"><b>HADES</b></div>
+                  <div class="mini-game cover-c"><b>ORBITAL</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="floating-stat stat-one">
+            <strong>34h</strong><span>Playtime tracked</span>
+          </div>
+          <div class="floating-stat stat-two">
+            <strong>✓</strong><span>Save synced locally</span>
+          </div>
+        </div>
+        <div class="scroll-hint"><span></span> Scroll to explore</div>
+      </section>
+
+      <section id="features" class="tab-panel" data-panel="features">
+        <div class="section-heading">
+          <p class="eyebrow">Everything in one place</p>
+          <h2>A home for your<br /><em>whole collection.</em></h2>
+          <p>
+            From modern releases to timeless classics, Hydra Libre turns a
+            scattered library into a place you want to return to.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card feature-card-large gradient-blue">
+            <span class="card-icon">⇩</span>
+            <p class="card-kicker">01 / DOWNLOAD</p>
+            <h3>Embedded downloader</h3>
+            <p>
+              Download, install, and launch without leaving your library. See
+              every byte, source, and seed at a glance.
+            </p>
+            <div class="progress-demo">
+              <span>Hollow Knight</span><b>78%</b><i><u></u></i>
+            </div>
+          </article>
+          <article class="feature-card gradient-violet">
+            <span class="card-icon">⌘</span>
+            <p class="card-kicker">02 / THEMES</p>
+            <h3>Make it yours</h3>
+            <p>
+              Custom themes, backgrounds, and artwork let your launcher feel
+              like home.
+            </p>
+            <div class="color-dots"><i></i><i></i><i></i><i></i><i></i></div>
+          </article>
+          <article class="feature-card gradient-green">
+            <span class="card-icon">◷</span>
+            <p class="card-kicker">03 / TRACKING</p>
+            <h3>Every hour counts</h3>
+            <p>Playtime, streaks, and history are recorded automatically.</p>
+            <div class="bars">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </article>
+          <article class="feature-card feature-card-wide gradient-orange">
+            <div>
+              <span class="card-icon">▦</span>
+              <p class="card-kicker">04 / BIG PICTURE</p>
+              <h3>Lean back and play</h3>
+              <p>
+                A controller-friendly interface made for the couch, Steam Deck,
+                and your TV.
+              </p>
+            </div>
+            <div class="controller">◯<span>+</span>◯</div>
+          </article>
+        </div>
+        <div class="support-strip">
+          <span>Built for your setup</span><b>Windows</b><b>Linux</b><b>macOS</b
+          ><b>Steam Deck</b><b>Keyboard + controller</b>
+        </div>
+      </section>
+
+      <section
+        id="achievements"
+        class="tab-panel split-panel"
+        data-panel="achievements"
+      >
+        <div class="split-copy">
+          <p class="eyebrow">Progress you can feel</p>
+          <h2>More than a<br /><em>checklist.</em></h2>
+          <p>
+            See your achievements in context, celebrate the hard ones, and keep
+            a record of the moments that made a game yours.
+          </p>
+          <ul class="check-list">
+            <li><span>✓</span> Sync achievements across your devices</li>
+            <li><span>✓</span> Track completion and earned points</li>
+            <li><span>✓</span> Discover hidden achievements as you play</li>
+          </ul>
+          <a class="text-link" href="#download"
+            >Start your collection <span>→</span></a
+          >
+        </div>
+        <div class="achievement-board">
+          <div class="board-top">
+            <span>ACHIEVEMENTS</span><b>Hollow Knight</b
+            ><span class="board-percent">68%</span>
+          </div>
+          <div class="board-progress"><i></i></div>
+          <div class="achievement-list">
+            <div class="achievement unlocked">
+              <span class="badge">✦</span>
+              <div><b>Falsehood</b><small>Defeat the False Knight</small></div>
+              <time>UNLOCKED</time>
+            </div>
+            <div class="achievement unlocked">
+              <span class="badge">◈</span>
+              <div>
+                <b>Test of Resolve</b><small>Defeat the Mantis Lords</small>
+              </div>
+              <time>UNLOCKED</time>
+            </div>
+            <div class="achievement locked">
+              <span class="badge">?</span>
+              <div>
+                <b>Sealed Siblings</b><small>Defeat the Hollow Knight</small>
+              </div>
+              <time>LOCKED</time>
+            </div>
+            <div class="achievement locked">
+              <span class="badge">?</span>
+              <div><b>Dream No More</b><small>Defeat the Radiance</small></div>
+              <time>LOCKED</time>
+            </div>
+          </div>
+          <div class="board-footer">
+            <span>24 of 35 unlocked</span><span>1,240 pts</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="social" class="tab-panel" data-panel="social">
+        <div class="section-heading centered">
+          <p class="eyebrow">Play together, even apart</p>
+          <h2>Your people are<br /><em>part of the library.</em></h2>
+          <p>
+            See what friends are playing, compare progress, and make your
+            profile feel like yours.
+          </p>
+        </div>
+        <div class="social-layout">
+          <div class="profile-card">
+            <div class="profile-banner"></div>
+            <div class="profile-avatar">✦</div>
+            <div class="profile-details">
+              <h3>moonlit_fox <span class="online-dot"></span></h3>
+              <p>Exploring new worlds since 2021</p>
+              <div class="profile-stats">
+                <span><b>42</b> games</span><span><b>312h</b> playtime</span
+                ><span><b>68%</b> complete</span>
+              </div>
+            </div>
+            <div class="profile-games">
+              <small>RECENTLY PLAYED</small>
+              <div>
+                <i class="tiny-cover cover-a"></i
+                ><i class="tiny-cover cover-b"></i
+                ><i class="tiny-cover cover-c"></i
+                ><i class="tiny-cover cover-d"></i>
+              </div>
+            </div>
+          </div>
+          <div class="activity-feed">
+            <div class="feed-title">
+              <span>FRIENDS & STATUS</span><small>3 online</small>
+            </div>
+            <div class="friend">
+              <span class="friend-avatar avatar-pink">A</span>
+              <div><b>aurora.exe</b><small>Playing Celeste</small></div>
+              <i class="playing-bars">▮▮▮</i>
+            </div>
+            <div class="friend">
+              <span class="friend-avatar avatar-blue">K</span>
+              <div><b>kaito</b><small>Browsing library</small></div>
+              <i class="status-away">●</i>
+            </div>
+            <div class="friend">
+              <span class="friend-avatar avatar-gold">M</span>
+              <div><b>mossybyte</b><small>Last seen 12m ago</small></div>
+              <i class="status-offline">●</i>
+            </div>
+            <div class="feed-note">
+              Share your profile, not your data. You choose what is visible.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="cloud"
+        class="tab-panel split-panel cloud-panel"
+        data-panel="cloud"
+      >
+        <div class="cloud-art">
+          <div class="folder-card">
+            <span>HYDRA LIBRE</span><strong>profile.json</strong
+            ><small>Synced just now</small>
+            <div class="folder-lines"><i></i><i></i><i></i></div>
+          </div>
+          <div class="sync-ring">↻</div>
+          <div class="device device-one">⌘</div>
+          <div class="device device-two">⊞</div>
+          <div class="device device-three">◈</div>
+        </div>
+        <div class="split-copy">
+          <p class="eyebrow">Your saves, your choice</p>
+          <h2>Cloud saving<br /><em>without the lock-in.</em></h2>
+          <p>
+            Choose a folder you control for game saves, achievements, playtime,
+            favorites, and preferences. Use Dropbox, OneDrive, Syncthing,
+            Nextcloud, or a plain USB drive.
+          </p>
+          <div class="cloud-points">
+            <div>
+              <b>01</b
+              ><span
+                ><strong>Free by default</strong>No subscription required for
+                local sync.</span
+              >
+            </div>
+            <div>
+              <b>02</b
+              ><span
+                ><strong>Private and portable</strong>Your profile is a readable
+                JSON file.</span
+              >
+            </div>
+            <div>
+              <b>03</b
+              ><span
+                ><strong>Hydra Cloud optional</strong>Prefer hosted backups?
+                They remain available.</span
+              >
+            </div>
+          </div>
+          <a class="text-link" href="#download"
+            >Take your profile with you <span>→</span></a
+          >
+        </div>
+      </section>
+
+      <section
+        class="tab-panel feature-showcase"
+        data-panel="overview-more"
+        aria-label="More Hydra features"
+      >
+        <div class="section-heading">
+          <p class="eyebrow">Designed around play</p>
+          <h2>Small details.<br /><em>Big difference.</em></h2>
+        </div>
+        <div class="showcase-grid">
+          <div>
+            <span>◉</span>
+            <h3>Modern games</h3>
+            <p>
+              One polished place for new releases and your everyday library.
+            </p>
+          </div>
+          <div>
+            <span>◌</span>
+            <h3>Classics</h3>
+            <p>
+              Bring ROMs, emulators, and old favorites into the same experience.
+            </p>
+          </div>
+          <div>
+            <span>⌁</span>
+            <h3>Constant updates</h3>
+            <p>An active open-source project that keeps getting better.</p>
+          </div>
+          <div>
+            <span>▤</span>
+            <h3>Community stats</h3>
+            <p>Compare milestones and celebrate the games you love.</p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="download"
+        class="tab-panel download-panel"
+        data-panel="download"
+      >
+        <div class="download-copy">
+          <p class="eyebrow"><span class="pulse"></span> Available now</p>
+          <h2>Ready when<br /><em>you are.</em></h2>
+          <p>
+            Get the latest Hydra Libre build for your platform. No account
+            required to use your local library.
+          </p>
+          <div class="download-buttons">
+            <a
+              class="button button-primary"
+              href="https://github.com/JustAdreamerFL/hydra-libre/releases/latest"
+              >Download latest release <span>↓</span></a
+            ><a
+              class="button button-ghost"
+              href="https://github.com/JustAdreamerFL/hydra-libre"
+              >View source on GitHub <span>↗</span></a
+            >
+          </div>
+          <small>Windows 10+ · macOS 12+ · Linux (AppImage, deb, rpm)</small>
+        </div>
+        <div class="release-card">
+          <div class="release-card-top">
+            <span class="release-icon">H</span>
+            <div><b>Hydra Libre</b><small>Latest stable build</small></div>
+            <span class="version">v1.4.6</span>
+          </div>
+          <div class="release-options">
+            <a
+              href="https://github.com/JustAdreamerFL/hydra-libre/releases/latest"
+              >⊞ <span>Windows</span><small>Installer + portable</small> ↗</a
+            ><a
+              href="https://github.com/JustAdreamerFL/hydra-libre/releases/latest"
+              >◈ <span>Linux</span><small>AppImage + packages</small> ↗</a
+            ><a
+              href="https://github.com/JustAdreamerFL/hydra-libre/releases/latest"
+              >⌘ <span>macOS</span><small>Universal DMG</small> ↗</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="tab-panel faq-panel" data-panel="faq">
+        <div class="section-heading">
+          <p class="eyebrow">Questions, answered</p>
+          <h2>Good to<br /><em>know.</em></h2>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary>What is Hydra Libre?<span>+</span></summary>
+            <p>
+              Hydra Libre is an open-source desktop game launcher for Windows,
+              Linux, and macOS. It organizes games you own, tracks playtime and
+              achievements, and offers a local-first profile sync.
+            </p>
+          </details>
+          <details>
+            <summary>Do I need an account?<span>+</span></summary>
+            <p>
+              No. You can use the local library, backups, and profile folder
+              sync without an account. An account is only needed for optional
+              online social features and Hydra Cloud.
+            </p>
+          </details>
+          <details>
+            <summary>Is profile synchronization free?<span>+</span></summary>
+            <p>
+              Yes. Select a folder in Settings → Backups and Hydra Libre will
+              keep a portable profile snapshot there. It works with any file
+              synchronization service or a removable drive.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Which operating systems are supported?<span>+</span>
+            </summary>
+            <p>
+              Hydra Libre releases are built for Windows, Linux, and macOS.
+              Linux builds include AppImage and distribution packages where
+              available.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Where can I report a problem or contribute?<span>+</span>
+            </summary>
+            <p>
+              Open an issue or pull request on GitHub. Hydra Libre is built in
+              the open and welcomes bug reports, translations, design ideas, and
+              code contributions.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark">H</span><span>HYDRA <em>LIBRE</em></span>
+      </div>
+      <p>Built for players who want more choice.</p>
+      <div class="footer-links">
+        <a href="https://github.com/JustAdreamerFL/hydra-libre">GitHub</a
+        ><a href="#faq">FAQ</a><a href="#download">Download</a>
+      </div>
+      <small>© 2026 Hydra Libre · Open source</small>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
