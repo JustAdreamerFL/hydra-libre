@@ -38,19 +38,37 @@ try {
   const unmerged = output(["ls-files", "-u"]);
   if (unmerged) {
     console.log("Resolving bootstrap conflicts in favor of hydra-libre...");
-    const conflictPaths = [
-      ...new Set(
-        unmerged
-          .split("\n")
-          .map((entry) => entry.slice(entry.indexOf("\t") + 1))
-          .filter(Boolean)
-      ),
-    ];
+    const stageByPath = new Map();
+    for (const entry of unmerged.split("\n")) {
+      if (!entry) continue;
+      const tab = entry.indexOf("\t");
+      if (tab === -1) continue;
+      const path = entry.slice(tab + 1);
+      if (!path) continue;
+      const metadata = entry.slice(0, tab).trim().split(/\s+/);
+      const stage = Number(metadata[2]);
+      if (!stageByPath.has(path)) stageByPath.set(path, new Set());
+      stageByPath.get(path).add(stage);
+    }
+
+    const oursPaths = [];
+    const theirsOnlyPaths = [];
+    for (const [path, stages] of stageByPath) {
+      if (stages.has(2)) oursPaths.push(path);
+      else theirsOnlyPaths.push(path);
+    }
+
     // Only add conflict paths. The index already contains the merged result
     // for every non-conflicting path; `git add --all` would replace those
     // results with the old working tree and silently drop upstream changes.
-    run(["checkout", "--ours", "--", ...conflictPaths]);
-    run(["add", "--", ...conflictPaths]);
+    if (oursPaths.length) {
+      run(["checkout", "--ours", "--", ...oursPaths]);
+      run(["add", "--", ...oursPaths]);
+    }
+    if (theirsOnlyPaths.length) {
+      run(["checkout", "--theirs", "--", ...theirsOnlyPaths]);
+      run(["add", "--", ...theirsOnlyPaths]);
+    }
   }
 
   const tree = output(["write-tree"]);
