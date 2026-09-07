@@ -52,10 +52,12 @@ try {
     }
 
     const oursPaths = [];
-    const theirsOnlyPaths = [];
+    const theirsPaths = [];
+    const removePaths = [];
     for (const [path, stages] of stageByPath) {
       if (stages.has(2)) oursPaths.push(path);
-      else theirsOnlyPaths.push(path);
+      else if (stages.has(3)) theirsPaths.push(path);
+      else if (stages.has(1)) removePaths.push(path);
     }
 
     // Only add conflict paths. The index already contains the merged result
@@ -65,9 +67,12 @@ try {
       run(["checkout", "--ours", "--", ...oursPaths]);
       run(["add", "--", ...oursPaths]);
     }
-    if (theirsOnlyPaths.length) {
-      run(["checkout", "--theirs", "--", ...theirsOnlyPaths]);
-      run(["add", "--", ...theirsOnlyPaths]);
+    if (theirsPaths.length) {
+      run(["checkout", "--theirs", "--", ...theirsPaths]);
+      run(["add", "--", ...theirsPaths]);
+    }
+    if (removePaths.length) {
+      run(["rm", "--cached", "--", ...removePaths]);
     }
   }
 
